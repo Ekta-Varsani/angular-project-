@@ -290,17 +290,17 @@ cron.schedule('* * * * * *', async () => {
   result = await RideScheduleData.find({ Status: { $eq: null } }) 
 
   for (let i = 0; i < result.length; i++) {
-    if (currentTime > (parseInt(result[i].reqTime) + 5000)) {
+    if (currentTime > (parseInt(result[i].reqTime) + 3000)) {
     
 
-      console.log(updatedReq);
+      // console.log(updatedReq);
       const updatedReq = await RideScheduleData.findByIdAndUpdate(result[i]._id, { Status: 'declined', }, { new: true })
 
       
-      // io.on('connection', (socket) => {
-      //   console.log("connected");
-      //   socket.emit('updateReq', updatedReq)
-      // })
+      io.on('connection', (socket) => {
+        console.log("connected");
+        socket.emit('updateReq', updatedReq)
+      })
 
       await Drivers.findByIdAndUpdate(
         updatedReq.DriverDetail,

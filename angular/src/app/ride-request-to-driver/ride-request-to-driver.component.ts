@@ -32,26 +32,20 @@ export class RideRequestToDriverComponent implements OnInit {
     });
 
     
-    this.socket.on("updateReq", (socket:any) => {
-      console.log("socket");
-      // socket.next()
-            // console.log(socket);
-
-    })
-
-    // this.updateRide()
+    
+    this.updateRide()
 
   }
 
-  // updateRide(){
-  //   return new Observable(observer => {
-  //     this.socket.on('updateReq', (message:any) => {
-  //       observer.next(message);
-  //       console.log(message);
+  updateRide(){
+    return new Observable(observer => {
+      this.socket.on('updateReq', (message:any) => {
+        // observer.next(message);
+        console.log("message");
         
-  //     });
-  //   });
-  // }
+      });
+    });
+  }
 
   
   onAccept(data:any){

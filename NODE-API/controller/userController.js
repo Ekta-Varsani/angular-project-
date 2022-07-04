@@ -263,3 +263,27 @@ module.exports = {
   addUserNew,
   updateUserNew,
 };
+
+
+
+// const dummyUser =  async (data) => {
+   
+//   const newuser = new User({
+//       UserName: data.UserName,
+//       Email: data.Email,
+//       PhoneNumber: data.PhoneNumber,
+//   })
+  
+//   try {
+//       if (req.file) {
+//           newuser.image = "http://localhost:4000" + "/public/" + req.file.originalname
+//       }
+//       const data = await newuser.save();
+     
+//       res.json(data)
+
+//   }
+//   catch (err) {
+//       res.send(err);
+//   }
+// };

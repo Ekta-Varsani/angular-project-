@@ -309,7 +309,7 @@ export class RideScheduleComponent implements OnInit {
 
         this.rideCreateService.updateStatus(this.rideId, {Status: 'pending', DriverDetail: driverId}).subscribe(res => {
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                this.router.navigate(['/main/request']);
+                this.router.navigate(['/main/scheduleRide']);
             });
         })
     }
@@ -325,7 +325,7 @@ export class RideScheduleComponent implements OnInit {
 
         this.rideCreateService.updateStatus(this.rideId, {Status: 'pending', DriverDetail: item._id}).subscribe(res => {
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                this.router.navigate(['/main/request']);
+                this.router.navigate(['/main/scheduleRide']);
             });
         })
 
