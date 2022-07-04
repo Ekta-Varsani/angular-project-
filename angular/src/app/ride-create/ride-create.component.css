@@ -1,0 +1,38 @@
+.overlap {
+    position: relative;
+}
+.overlap>label {
+    position: absolute;
+    top: -9px;
+    left: 20px;
+}
+
+.full {
+    height: 300px;
+}
+hr {
+    transform: rotate(90deg);
+}
+.fa{
+    height: 20px;
+}
+ul{
+    padding-left: 0 !important;
+}
+
+li{
+    list-style: none;
+    background-color: rgb(240, 238, 238);
+}
+.aa{
+    background-color: rgb(240, 238, 238);
+    margin-top: 10px;
+}
+.float-end{
+    background-color: rgb(240, 238, 238);
+    border-radius: 45%;
+    padding: 5px;
+}
+.vehicleDetail{
+    padding: 10px;
+}

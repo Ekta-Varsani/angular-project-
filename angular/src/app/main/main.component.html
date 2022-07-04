@@ -1,0 +1,52 @@
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+</head>
+
+<div class="sidebar-opener" (click)="sidebarShow = !sidebarShow">
+    
+    <button class="btn  btn-block ">Menu <span><mat-icon matBadge="{{notification}}" matBadgeColor="warn"><i class="fa fa-bell-o" aria-hidden="true"></i></mat-icon></span></button>
+    
+</div>
+
+<div class="sidebar-slider" [class.sidebar-slide-in]="sidebarShow">
+    <div class="sidebar-close" (click)="sidebarShow = !sidebarShow">
+        <button class="btn-close"></button>
+    </div>
+
+    <div class="sidebar-content">
+        <a routerLink="/main"><mat-icon matBadge="{{notification}}" matBadgeColor="warn"><i class="fa fa-bell-o" aria-hidden="true"></i></mat-icon></a>
+           
+        <a type="button" class="text-white dropdown-toggle" data-bs-toggle="dropdown" id="dropdownMenuButton2"
+            aria-expanded="false">
+            <span><i class="fa fa-hand-pointer-o" aria-hidden="true"></i></span>  Rides
+        </a>
+        <ul class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton2">
+            <li><a routerLink="/main/createRide">Create Rides</a></li> <hr class="text-dark">
+            <li><a routerLink="/main/scheduleRide">Scheduled Rides</a></li><hr class="text-dark">
+            <li><a routerLink="/main/confirmedRide">Confirmed Rides</a></li><hr class="text-dark">
+            <li><a routerLink="/main/rideHistory">Ride History</a></li>
+        </ul>
+
+        <a routerLink="/main/user"><span><i class="fa fa-user-o" aria-hidden="true"></i></span>  User</a>
+
+        <a routerLink="/main/driver"><span><i class="fa fa-id-card-o" aria-hidden="true"></i></span>  Driver</a>
+
+        <a type="button" class="text-white dropdown-toggle" data-bs-toggle="dropdown" id="dropdownMenuButton1"
+            aria-expanded="false">
+            <span><i class="fa fa-file-o" aria-hidden="true"></i></span>  Pricing
+        </a>
+        <ul class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton1">
+            <li><a routerLink="/main/vehicle"><span><i class="fa fa-hdd-o" aria-hidden="true"></i></span>  Vehicle Type</a></li> <hr class="text-dark">
+            <li><a routerLink="/main/country"><span><i class="fa fa-globe" aria-hidden="true"></i></span>  Country</a></li><hr class="text-dark">
+            <li><a routerLink="/main/city"><span><i class="fa fa-building-o" aria-hidden="true"></i></span>  City</a></li><hr class="text-dark">
+            <li><a routerLink="/main/vehiclePricing"><span><i class="fa fa-usd" aria-hidden="true"></i></span>  Vehicle Pricing</a></li>
+        </ul>
+        
+        <a routerLink="/main/request"><span><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></span> Requests</a>
+    </div>
+</div>
+
+
+
+<router-outlet></router-outlet>

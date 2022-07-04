@@ -1,0 +1,42 @@
+<div class="container">
+    <form [formGroup]="basic">
+        <!-- list of countries -->
+        <div class="row mt-3">
+            <div class="col-6">
+                <select id="countryId" class="form-control" aria-label="Default select example" formControlName="countryId"  (change)="onchange($event)">
+                    <option *ngFor="let country of countryList" [value]="country._id">
+                        {{country.CounteryName}}
+                    </option>
+                </select>
+                <span class="text-danger" *ngIf="basic.controls['countryId'].invalid && basic.controls        ['countryId'].touched && basic.controls['countryId'].hasError('required')">
+                    Please select country
+                </span>
+            </div>
+        </div>
+
+        <div class="row mt-3 main">
+
+            <!-- map -->
+            <div class="col-10">
+                <div class="full" id="map">
+
+                </div>
+            </div>
+
+            <!-- cities of selected country -->
+            <div class="col-2" >
+                <ul>
+                    <li *ngFor="let val of cityArr">
+                        <div class="row mt-3" >
+                            <div class="col-5" >
+                                <div class="color" [style.backgroundColor]="val.color"></div>
+                            </div>
+                            <div class="col-7 my-auto">{{val.CityName}}</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+

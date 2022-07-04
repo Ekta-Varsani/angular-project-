@@ -1,0 +1,290 @@
+<div class="container main mt-5">
+
+    <!-- add driver -->
+    <div class="row">
+        <form [formGroup]="driverForm" enctype="multipart/form-data">
+            <div class="row mt-3 ">
+                <div class="col-1">
+                    <label class="mt-0 imageProfile" for="choose-file" name="image" id="preview">
+                        <img class="rounded" id="img-preview" [src]="imageSrc || '../../assets/images/random.png'" height="60px" width="60px">
+                    </label>
+                    <input type="file" id="choose-file" hidden name="image" formControlName="image" (change)="readURL($event);">
+                </div>
+                <div class="col-2">
+                    <input type="text" id="DriverName" class=" form-control form-control-sm mt-2 border border-info text-info" placeholder="Enter name" name="DriverName" formControlName="DriverName">
+                    <span class="text-danger" *ngIf="driverForm.controls['DriverName'].invalid && driverForm.controls['DriverName'].touched && driverForm.controls['DriverName'].hasError('required')">
+                        Please Enter name
+                    </span>
+                </div>
+                <div class="col-3">
+                    <input type="email" id="emailDriver" class=" form-control form-control-sm mt-2 border border-info text-info" placeholder="Enter email id" name="Email" formControlName="Email" (keyup)="compareEmail($event)">
+                    <span class="text-danger" *ngIf="driverForm.controls['Email'].invalid && driverForm.controls['Email'].touched && driverForm.controls['Email'].hasError('required')">
+                        Please enter email
+                    </span>
+                    <span class="text-danger" *ngIf="driverForm.controls['Email'].invalid && driverForm.controls['Email'].touched && driverForm.controls['Email'].hasError('email')">
+                        Please enter valid email
+                    </span>
+                </div>
+                <div class="col-2">
+                    <select class=" form-select form-select-sm  border border-info text-info mt-2" id="countryList" name="countryId" formControlName="countryId">
+                        <!-- <option selected="selected">country</option> -->
+                        <option *ngFor="let country of countryList" [value]="country._id">
+                            {{country.CounteryName}}</option>
+                    </select>
+                    <span class="text-danger" *ngIf="driverForm.controls['countryId'].invalid && driverForm.controls['countryId'].touched && driverForm.controls['countryId'].hasError('required')">
+                        Please select country
+                    </span>
+                </div>
+                <div class="col-3">
+                    <input type="phone" id="phoneDriver" class=" form-control form-control-sm mt-2 border border-info text-info" placeholder="Enter Phone num" name="PhoneNumber" maxlength="10" formControlName="PhoneNumber" (keypress)="isNumber($event)" (keyup)="comparePhone($event)">
+                    <span class="text-danger" *ngIf="driverForm.controls['PhoneNumber'].invalid && driverForm.controls['PhoneNumber'].touched && driverForm.controls['PhoneNumber'].hasError('required')">
+                        Please enter Phone number
+                    </span>
+                    <span class="text-danger" *ngIf="driverForm.controls['PhoneNumber'].invalid && driverForm.controls['PhoneNumber'].touched && driverForm.controls['PhoneNumber'].hasError('pattern')">
+                        Length should be 10 digit
+                    </span>
+                </div>
+                <div class="col-1">
+                    <button type="submit" id="submitUser" (click)="onsubmit()"
+                        class="btn btn-sm btn-info border border-info text-white btn-outline-light text-primary mt-2 mb-2" [disabled]="!driverForm.valid || btn || btnPhoneDriver">
+                        +
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- search driver -->
+    <div class="row mt-3">
+        <input id="searchUser"  class="form-control form-control-sm me-2 border border-info "
+        type="text" placeholder="Search via Email, name or phone number" [(ngModel)]="searchText">
+    </div>   
+
+    <!-- display driver -->
+    <div class="row mt-3">
+        <table id="myTable" class="table table-striped">
+            <thead class="bg-info text-white">
+                <tr>
+                    <td>ID</td>
+                    <td>Name</td>
+                    <td>Email</td>
+                    <td>Country</td>
+                    <td>Phone</td>
+                    <td>Service type</td>
+                    <td>Status</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let driver of driverList | filter:searchText; let i=index" >
+                    <td>{{i+1}}</td>
+                    <td>{{driver.DriverName}}</td>
+                    <td>{{driver.Email }}</td>
+                    <td>{{driver.countryId.CounteryName}}</td>
+                    <td>{{driver.PhoneNumber }}</td>
+                    <ng-template [ngIf]="driver.ServiceType" [ngIfElse]="nn">
+                        <td >
+                            {{driver.ServiceType.VehicleName}}    
+                        </td>
+                        <td id="approved" data-bs-toggle="modal" data-bs-target="#updateOnlineStatus" (click)="changeStatus(driver)">
+                            {{driver.OnlineStatus}}  
+                            <!-- approved   -->
+                        </td>
+                    </ng-template>
+                    <ng-template #nn>
+                        <td>
+
+                        </td>
+                        <td>
+                            {{driver.OnlineStatus}}
+                        </td>
+                    </ng-template>
+
+                    <td>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-info text-white dropdown-toggle" data-bs-toggle="dropdown" id="dropdownMenuButton1"  aria-expanded="false">
+                            Actions
+                            </button>
+                            <ul class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton1">    
+                                <li><a  data-bs-toggle="modal" data-bs-target="#driverUpdate" (click)="getCurrentData(driver)">Edit</a></li> <hr class="text-info">
+                                <li><a (click)="deleteDriver(driver)">Remove</a></li><hr class="text-info">
+                                <li><a data-bs-toggle="modal" data-bs-target="#assignVehicle" (click)="selectVehicle(driver)">Assign vehicle</a></li><hr class="text-info">
+                                <li><a data-bs-toggle="modal" data-bs-target="#addBank" (click)="addBank(driver)">Add Bank</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+
+<!-- update -->
+<div class="modal" id="driverUpdate">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form [formGroup]="updateDriverForm" (ngSubmit)="updateDriver(updateDriverForm.value)" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div class="row mt-3 mx-auto">
+                            <label class="mt-0  " for="choose-fileUpdate"  id="previewUpdate">
+                                <div id="img-previewUpdate" >
+                                    <img class="iii" [src]="urlUpdate || currentImgdriver" height="60px" width="60px">
+                                </div> 
+                            </label>
+                            <input type="file"  id="choose-fileUpdate" hidden  name="image" formControlName="image" (change)="changeUpdate($event)">
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="Name" class="float-end">Name</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control form-control-sm"
+                                    id="nameUpdate" name="DriverName" formControlName="DriverName">
+                                <!-- <span class="text-danger" *ngIf="updateDriverForm.controls['DriverName'].invalid && updateDriverForm.controls['DriverName'].touched && updateDriverForm.controls['DriverName'].hasError('required')">
+                                    Please enter name
+                                </span>     -->
+                            </div>
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="email" class="float-end">Email</label>
+                            </div>
+                            <div class="col-8">
+                                <input  type="text" class="form-control form-control-sm"
+                                    id="emailUpdateDriver" name="Email" formControlName="Email" (keyup)="compareEmailUpdate($event)">
+                            </div>
+                        </div>
+                         <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="Country Name" class="float-end">Country Name</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" name="countryId" formControlName="countryId">
+                                    <option *ngFor="let country of countryList" [value]="country._id">{{country.CounteryName}}</option>
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="cell" class="float-end">Phone NUmber</label>
+                            </div>
+                            <div class="col-8">
+                                <input  type="text" class="form-control form-control-sm"
+                                    id="phoneUpdateDriver" name="PhoneNumber" formControlName="PhoneNumber" (keyup)="comparePhoneUpdate($event)">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info text-white float-end mt-3" data-bs-dismiss="modal" [disabled]="btnUpdateDriver || btnPhoneUpdateDriver">Update</button>
+                    </div>
+                    <input type="text" hidden formControlName="_id">
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- assign vehicle -->
+<div class="modal" id="assignVehicle">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form [formGroup]="assignVehicleForm" (ngSubmit)="assignVehicle(assignVehicleForm.value)" >
+                    <div class="form-group">
+                        <div class="row mt-3 ">
+                            <div class="col-4">
+                                <label for="vehicle" class="float-end">Choose Vehicle</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" name="ServiceType" formControlName="ServiceType">
+                                    <option *ngFor="let vehicle of vehicleList" [value]="vehicle._id">
+                                        {{vehicle.VehicleName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info text-white float-end mt-3" data-bs-dismiss="modal">Assign Vehicle</button>
+                        <input type="text" formControlName="OnlineStatus">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- update online Status -->
+<div class="modal" id="updateOnlineStatus">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form>
+                   <div class="row">
+                       <div class="col-6">
+                            <button id="dec" data-bs-dismiss="modal" class="btn btn-danger float-end" type="submit" (click)="onDecline()">Decline</button>
+                       </div>
+                       <div class="col-6">
+                            <button id="app" data-bs-dismiss="modal" class="btn btn-success" (click)="onApprove()">Approve</button>
+                       </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add Bank -->
+<div class="modal" id="addBank">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row">
+                    <form [formGroup]="addBankForm" (ngSubmit)="onAddBank(addBankForm.value)">
+                        <div class="row">
+                            <input class="form-control" formControlName="DriverName" type="text" >
+                        </div>
+                        <div class="row mt-3">
+                            <input class="form-control" formControlName="Email" type="text">
+                        </div>
+                        <div class="row mt-3">
+                            <input class="form-control" formControlName="accountNumber" placeholder="Account Number" (keypress)="isNumber($event)" required>
+                        </div>
+                        <div class="row mt-3">
+                            <input class="form-control" formControlName="routingNumber" placeholder="Routing Number" (keypress)="isNumber($event)" required>
+                        </div>
+                        <input type="text" hidden formControlName="_id">
+                        <div class="row mt-3">
+                            <button type="submit" class="btn btn-primary text-white" data-bs-dismiss="modal" >Add Bank</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

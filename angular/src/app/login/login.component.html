@@ -1,0 +1,18 @@
+<div class="container mt-5">
+    <div class="row d-flex">
+        <div class="col-sm-8 col-xs-12">
+            <img src='../../assets/images/img1.png' width="100%">
+        </div>
+        <div class="col-sm-4 col-xs-12 my-auto">
+            <h2 class="text-center">Sign In</h2>
+            <form class="text-center">
+                <input type="text" class="form-control" placeholder="User Name" name="UserName" [(ngModel)]="loginData.UserName">
+                <br>
+                <!-- <span class="error text-danger" *ngIf="email.invalid && email.touched">Please enter email</span>  -->
+                <input type="password" class="form-control" name="Password" placeholder="Password" [(ngModel)]="loginData.Password"><br>
+                <!-- <span class="error text-danger text-left" *ngIf="password.invalid && password.touched">Please enter Password</span> -->
+                <button class="btn btn-primary" type="submit" (click)="onLogin()">Sign In</button>
+            </form>
+        </div>
+    </div>
+</div>

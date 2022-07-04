@@ -1,0 +1,136 @@
+<div class="container">
+    <form [formGroup]="priceForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <div class="row Small mt-5">
+                <div class="col-2">
+                    <label for="Country Name" class="float-end">Country</label>
+                </div>
+                <div class="col-10">
+                    <select class="form-select form-select-sm form-control-sm" id="countryAdd"  formControlName="countryId" (change)="onChange($event)">
+                        <option *ngFor="let country of countryList" [value]="country._id">{{country.CounteryName}}</option>
+                    </select>
+                    <span class="text-danger" *ngIf="priceForm.controls['countryId'].invalid && priceForm.controls       ['countryId'].touched && priceForm.controls['countryId'].hasError('required')">
+                        Please select country
+                    </span>
+                </div>
+            </div>
+            <div class="row Small mt-3">
+                <div class="col-2">
+                    <label for="City Name" class="float-end">City</label>
+                </div>
+                <div class="col-10">
+                    <select class="form-select form-select-sm form-control-sm" id="city" formControlName="CityName">
+                        <option *ngFor="let city of countryWiseCities" [value]="city._id">{{city.CityName}}</option>
+                    </select>
+                    <span class="text-danger" *ngIf="priceForm.controls['CityName'].invalid && priceForm.controls       ['CityName'].touched && priceForm.controls['CityName'].hasError('required')">
+                        Please select city
+                    </span>
+                </div>
+            </div>
+            <div class="row Small mt-3">
+                <div class="col-2">
+                    <label for="type Name" class="float-end">Type</label>
+                </div>
+                <div class="col-10">
+                    <select class="form-select form-select-sm form-control-sm" id="countryAdd"  formControlName="ServiceType" >
+                        <option *ngFor="let vehicle of vehicleList" [value]="vehicle._id">{{vehicle.VehicleName}}</option>
+                    </select>
+                    <span class="text-danger" *ngIf="priceForm.controls['ServiceType'].invalid && priceForm.controls     ['ServiceType'].touched && priceForm.controls['ServiceType'].hasError('required')">
+                        Please select vehicle
+                    </span>
+                </div>
+            </div>
+            <div class="row small mt-3">
+                <div class="col-2">
+                    <label for="Max Space" class="float-end">Max Space</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" formControlName="MaxSpace" class="form-control form-control-sm">
+                </div>
+                <span class="text-danger" *ngIf="priceForm.controls['MaxSpace'].invalid && priceForm.controls['MaxSpace'].touched && priceForm.controls['MaxSpace'].hasError('required')">
+                    Please Enter MaxSpace
+                </span>
+            </div>
+            <div class="row small mt-3">
+                <div class="col-2">
+                    <label for="Provider Profit" class="float-end">Provider Profit</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" formControlName="Profite" class="form-control form-control-sm">
+                </div>
+                <span class="text-danger" *ngIf="priceForm.controls['Profite'].invalid && priceForm.controls['Profite'].touched && priceForm.controls['Profite'].hasError('required')">
+                    Please Enter Prifit
+                </span>
+            </div>
+            <div class="row small mt-3">
+                <div class="col-2">
+                    <label for="Min fare" class="float-end">Min.Fare</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" formControlName="MinFare" class="form-control form-control-sm">
+                </div>
+                <span class="text-danger" *ngIf="priceForm.controls['MinFare'].invalid && priceForm.controls['MinFare'].touched && priceForm.controls['MinFare'].hasError('required')">
+                    Please Enter MinFare
+                </span>
+            </div>
+            <div class="row small mt-3">
+                <div class="col-2">
+                    <label for="dfbp" class="float-end">Distance for Base price</label>
+                </div>
+                <div class="col-4">
+                    <select class="form-select form-select-sm form-control-sm" id="dfbp"  formControlName="DistancePrice">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                    </select>
+                    <span class="text-danger" *ngIf="priceForm.controls['DistancePrice'].invalid && priceForm.controls   ['DistancePrice'].touched && priceForm.controls['DistancePrice'].hasError('required')">
+                        Please select Distance Price
+                    </span>
+                </div>   
+            </div>
+            <div class="row small mt-3">
+                <div class="col-2">
+                    <label for="Base Space" class="float-end">Base Price</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" formControlName="BasePrice" class="form-control form-control-sm">
+                </div>
+                <span class="text-danger" *ngIf="priceForm.controls['BasePrice'].invalid && priceForm.controls['BasePrice'].touched && priceForm.controls['BasePrice'].hasError('required')">
+                    Please Enter BasePrice
+                </span>
+            </div>
+            <div class="row small mt-3">
+                <div class="col-2">
+                    <label for="ppud" class="float-end">Price Per Unit Distance</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" formControlName="PpUD" class="form-control form-control-sm">
+                </div>
+                <span class="text-danger" *ngIf="priceForm.controls['PpUD'].invalid && priceForm.controls['PpUD'].touched && priceForm.controls['PpUD'].hasError('required')">
+                    Please Enter Price per Unit Distance
+                </span>
+            </div>
+            <div class="row small mt-3">
+                <div class="col-2">
+                    <label for="pput" class="float-end">Price per Unit Time</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" formControlName="PpUT" class="form-control form-control-sm">
+                </div>
+                <span class="text-danger" *ngIf="priceForm.controls['PpUT'].invalid && priceForm.controls['PpUT'].touched && priceForm.controls['PpUT'].hasError('required')">
+                    Please Enter Price per Unit Time
+                </span>
+            </div>
+            <div class=" row small mt-3 d-grid">
+                <button type="submit" class="btn btn-info text-white" [disabled]="!priceForm.valid">submit</button>
+            </div>
+        </div>
+    </form>
+</div>

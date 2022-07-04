@@ -1,0 +1,317 @@
+<div class="container mt-3">
+    <div class="row">
+        <!-- <form> -->
+        <div class="row">
+            <div class=" overlap col-2">
+                <label>Creation Date</label>
+                <input class="form-control" type="date" id="creationDate" (change)="searchByCreationDate($event)">
+            </div>
+            <div class="overlap col-2">
+                <label>Pick up Date</label>
+                <input class="form-control" type="date" [(ngModel)]="searchText">
+            </div>
+            <div class="overlap col-2">
+                <label>Vehicle type</label>
+                <select class="form-control" [(ngModel)]="searchText">
+                    <option *ngFor="let vehicle of vehicleList">{{vehicle.VehicleName}}</option>
+                </select>
+            </div>
+            <div class=" col-2 overlap">
+                <label>Search by</label>
+                <select class="form-control" (change)="getValue($event)" id="select">
+                    <option>User</option>
+                    <option>PickUp Add</option>
+                    <option>DropOff Add</option>
+                </select>
+            </div>
+            <div class="col-2" >
+                <input class="form-control" placeholder="search By" id="searchUser" (keyup)="getValue($event)">
+            </div>
+            <div class="col-2 d-grid">
+                <button class="btn btn-info text-white">Search</button>
+            </div>
+        </div>
+        <!-- </form> -->
+    </div>
+    <div class="row mt-3">
+        <div class="col-8">
+            <form>
+                <div class="div">
+                    Page <strong>{{page}}</strong> out of <strong>{{totalPage}}</strong>
+                    <button id="previousBtn" class="btn" disabled (click)="previous()"><</button>
+                    <button id="nextBtn" class="btn" (click)="next()">></button>
+                </div>
+            </form>
+            
+            <table id="myTable" class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>PickUp Time</td>
+                        <td>Vehicle
+                        </td>
+                        <td>User</td>
+                        <td>PickUp Add</td>
+                        <td>Drop Add</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let ride of pageDetail | filter: searchText; let i=index" (click)="showDetails(ride, $event)"   id="{{ride._id}}">
+                        <td>{{i+1}}</td>
+                        <td>{{ride.Date}}</td>
+                        <td>{{ride.VehiclePriceDetail.ServiceType.VehicleName}}</td>
+                        <td>{{ride.UserDetail.UserName}}</td>
+                        <td>{{ride.PickUpLocation}}</td>
+                        <td>{{ride.DropOffLocation}}</td>
+                        <!-- <ng-template [ngIf]="ride.Status" [ngIfElse]="notRequested">
+                            <ng-template [ngIf]="ride.Status == 'accepted'" [ngIfElse]="declined">
+                                <td class="text-success"><strong>{{ride.Status}}</strong></td>
+                                <td></td>
+                            </ng-template>
+                            <ng-template #declined>
+                                <td>
+                                    <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#assignDriver">Reassign</button>
+                                </td>
+                                <td><button id="remove" class="btn text-white" (click)="removeRide(ride)">&#215;</button></td>
+                            </ng-template>
+                        </ng-template>
+                        <ng-template #notRequested>
+                            <td>
+                                <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#assignDriver">Assign</button>
+                            </td>
+                            <td><button id="remove" class="btn text-white" (click)="removeRide(ride)">&#215;</button></td>
+                        </ng-template> -->
+                        <!-- <div [ngSwitch]="true">
+                            <div *ngSwitchCase="ride.Status == 'accepted'">
+                                <td class="text-success"><strong>{{ride.Status}}</strong></td>
+                                <td></td>
+                            </div>
+                            <div *ngSwitchCase="ride.Status == 'declined'">
+                                <td>
+                                    <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#assignDriver">Reassign</button>
+                                </td>
+                                <td><button id="remove" class="btn text-white" (click)="removeRide(ride)">&#215;</button></td>
+                            </div>
+                            <div *ngSwitchCase="ride.Status == 'canceled'">
+                                <td class="text-danger"><strong>{{ride.Status}}</strong></td>
+                                <td></td>
+                            </div>
+                            <div *ngSwitchDefault="">
+                                <td>
+                                    <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#assignDriver">Assign</button>
+                                </td>
+                                <td><button id="remove" class="btn text-white " (click)="removeRide(ride)">&#215;</button></td>
+                            </div>
+                        </div> -->
+
+                        <ng-container *ngIf="ride.Status == 'accepted' ;else second">
+                            <td class="text-success"><strong>{{ride.Status}}</strong></td>
+                            <td></td>
+                        </ng-container>
+                        <ng-template #second >
+                            <ng-container *ngIf="ride.Status == 'declined' ;else third">
+                                <td>
+                                    <button class="btn btn-info text-white reassignBtn" data-bs-toggle="modal" data-bs-target="#assignDriver">Reassign</button>
+                                </td>
+                                <td><button id="remove" class="btn text-white" (click)="removeRide(ride)">&#215;</button><span id="dname"></span></td>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #third>
+                            <ng-container *ngIf="ride.Status == 'canceled' ;else forth">
+                                <td class="text-danger"><strong>{{ride.Status}}</strong></td>
+                            <td></td>
+                            </ng-container> 
+                        </ng-template>
+                        <ng-template #forth>
+                            <ng-container *ngIf="ride.Status == 'completed'; else fifth">
+                                <td class="text-success"><strong>{{ride.Status}}</strong></td>
+                                <td></td>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #fifth>
+                            <ng-container *ngIf="ride.Status == 'pending'; else sixth">
+                                <td><strong class="text-info">{{ride.DriverDetail.DriverName}}</strong></td>
+                                <td></td>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #sixth>
+                            <td>
+                                <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#assignDriver">Assign</button>
+                            </td>
+                            <td><button id="remove" class="btn text-white" (click)="removeRide(ride)">&#215;</button></td>
+                        </ng-template>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4" id="details">
+            <div class="card p-3 detail">
+                <div class="row">
+                    <div class="col-4">
+                        <span>
+                            <i class="fa fa-credit-card" aria-hidden="true"></i>
+                        </span>
+                        &#8377; {{finalCost}}
+                    </div>
+                    <div class="col-5">
+                        <span>
+                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                        </span>
+                        {{Time}}
+                    </div>
+                    <div class="col-3">
+                        <span>
+                            <i class="fa fa-road" aria-hidden="true"></i>
+                        </span>
+                        {{Distance}}
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-4">
+                        <strong>Creation Time:
+                        </strong>
+                    </div>
+                    <div class="col-8">{{creationdate}}</div>
+                </div>
+                <div class="row mt-3">
+                    <strong>Location:
+                    </strong>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-3 extra">
+                        <div class="icon d-flex justify-content-center">
+                            <i class="fa fa-circle" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="location">{{PickUpLocation}}</div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-3 extra">
+                        <div class="icon d-flex justify-content-center">
+                            <i class="fa fa-circle" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="location">{{DropOffLocation}}</div>
+                    </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-4">
+                        <img class="mx-3" src="{{image}}" height="100px" width="100px" style="border-radius:50%;">
+                    </div>
+                    <div class="col-8">
+                        <strong>Passanger Detail:</strong><br>
+                        {{UserName}}<br>
+                        {{Email}}<br>
+                        {{PhoneNumber}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- assign driver -->
+<div class="modal" id="assignDriver">
+    <div class="modal-dialog">
+        <div
+            class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <span class="mx-auto">Assign driver to Ride (ID: {{rideId}})</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row">
+                    <input type="text" class="form-control" placeholder="search driver by name, email or phone" [(ngModel)]="searchText">
+                </div>
+                <form #name>
+                    <div class="row mt-3">
+                        <div class="col-5">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td></td>
+                                        <!-- <td>ID</td> -->
+                                        <td>Name</td>
+                                        <td>Email</td>
+                                        <td>Phone</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let driver of matchedDriver | filter: searchText" (click)="getDriverSheduledRide(driver)">
+                                        <td>
+                                            <input type="radio" name="driver" value="{{driver._id}}">
+                                        </td>
+                                        <td>{{driver.DriverName}}</td>
+                                        <td>{{driver.Email}}</td>
+                                        <td>{{driver.PhoneNumber}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-7">
+                            <strong>Scheduled Rides</strong>
+                            <hr>
+                            <div class="row mt-3" *ngFor="let rides of driverRides">
+                                <div class="col-6 ">
+                                   <div class="row">
+                                       <div class="col-3">
+                                           <img class="mx-2 my-2" src="{{rides.UserDetail.image}}" width="50px" height="50px">
+                                       </div>
+                                       <div class="col-9">
+                                           {{rides.UserDetail.UserName}}<br>
+                                           {{rides.Date}}<br>
+                                           <span><i class="fa fa-clock-o" aria-hidden="true"></i></span> {{rides.Time}}
+                                           <span><i class="fa fa-road" aria-hidden="true"></i></span> {{rides.Distance}}
+                                       </div>
+                                   </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-2 extra">
+                                            <div class="icon d-flex justify-content-center">
+                                                <i class="fa fa-circle" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="location">{{rides.PickUpLocation}}</div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-2 extra">
+                                            <div class="icon d-flex justify-content-center">
+                                                <i class="fa fa-circle" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="location">{{rides.DropOffLocation}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col d-grid">
+                            <button class="btn btn-dark text-white" data-bs-dismiss="modal" (click)="onAssignRandomDriver()">Assign Ride to any available driver</button>
+                        </div>
+                        <div class="col d-grid">
+                            <button class="btn btn-info text-white" data-bs-dismiss="modal" (click)="onAssignDriver()">Assign Ride to selected driver</button>
+                        </div>
+                    </div>
+                    <input type="text" id="rideId" name="id" [(ngModel)]="rideId" hidden>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+.overlap {
+    position: relative;
+}
+.overlap>label {
+    position: absolute;
+    top: -9px;
+    left: 20px;
+    font-size: 14px;
+}
+.table{
+    border-collapse:separate;
+    border-spacing:0 5px;
+    font-size: 15px;
+}
+tr{
+    background-color: white;
+}
+.container{
+    background-color: rgb(236, 233, 233);
+    padding: 10px;
+}
+.selected {
+    color: #0099cc;
+}

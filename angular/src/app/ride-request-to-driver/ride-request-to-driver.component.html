@@ -1,0 +1,47 @@
+<div class="container mt-3">
+    <table class="table table-striped">
+        <thead class="bg-info text-white">
+            <tr>
+                <td>Ride Username</td>
+                <td>PickUp</td>
+                <td>DropOff</td>
+                <td>Drivername</td>
+                <td>DriverPhone</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of requestList">
+                <td>{{data.RideDetail.UserDetail.UserName}}</td>
+                <td>{{data.RideDetail.PickUpLocation}}</td>
+                <td>{{data.RideDetail.DropOffLocation}}</td>
+                <td>{{data.DriverDetail.DriverName}}</td>
+                <td>{{data.DriverDetail.PhoneNumber}}</td>
+               
+                <ng-template [ngIf]="data.Status" [ngIfElse]="nn">
+                    <!-- <ng-template [ngIf]="data.Status == 'accepted'" [ngIfElse]="danger">
+                        <td class="text-success">
+                            <strong>{{data.Status}}</strong>   
+                        </td>
+                    </ng-template>
+                    <ng-template #danger>
+                        <td class="text-danger">
+                            <strong>{{data.Status}}</strong>    
+                        </td>
+                    </ng-template>
+                     -->
+                </ng-template>
+                <ng-template #nn>
+                    <td>
+                        <button id="accept" type="submit" value="accepted" class="btn btn-outline-success" (click)="onAccept(data)">Accept</button>
+                    </td>
+                    <td>
+                        <button id="decline" type="submit" value="declined" class="btn btn-outline-danger" (click)="onDecline(data)">Decline</button>
+                    </td>
+                </ng-template>
+            </tr>
+        </tbody>
+    </table>
+</div>
+

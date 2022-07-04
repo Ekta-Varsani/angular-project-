@@ -1,0 +1,94 @@
+<div class="container">
+    <div class="row">
+        <form [formGroup]="vehicleForm" enctype="multipart/form-data">
+            <div class="row mt-3">
+                <div class="col-3">
+                    <label class="float-end">Type name</label>
+                </div>
+                <div class="col-7">
+                    <input type="text" class="form-control form-control-sm" id="vehicleName" name="VehicleName" formControlName="VehicleName">
+                    <span class="text-danger" *ngIf="vehicleForm.controls['VehicleName'].invalid && vehicleForm.controls['VehicleName'].touched && vehicleForm.controls['VehicleName'].hasError('required')">
+                        Please Enter Vehicle Name
+                    </span>
+                </div>
+                <div class="col-2"></div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-3">
+                    <label class="float-end">Type image</label>
+                </div>
+                <div class="col-7">
+                    <input type="file" class="form-control form-control-sm" id="image" name="image" formControlName="image" (change)="change($event)">
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-dark btn-sm text-white" [disabled]="!vehicleForm.valid" (click)="onSubmit()">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <br>
+    <hr>
+    <br>
+
+    <div class="row main">
+        <div class="col-4" *ngFor="let vehicle of vehicleDisplayData">
+            <div class="card mb-3">
+                <img class="card-img-top mx-auto" [src]="vehicle.image" alt="Card image" style="height: 170px;" >
+                
+                <div class="card-body">
+                    <strong class="mx-auto">{{vehicle.VehicleName}}</strong>
+                    <a href="#" class="btn btn-dark btn-sm float-end" data-bs-toggle="modal" data-bs-target="#vehicleUpdate" (click)="edit(vehicle)">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- update -->
+<div class="modal" id="vehicleUpdate">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form [formGroup]="updateVehicleForm" (ngSubmit)="onUpdate(updateVehicleForm.value)" enctype="multipart/form-data">
+                    <div class="row mt-3 Small">
+                        <label class="mt-0 mx-auto d-block" for="choose-fileUpdate"  id="previewUpdate">
+                            <div id="img-previewUpdate" >
+                                    <!-- <img src="urlUpdate || currentImgVehicle" alt=""> -->
+                                    <img class="iii" [src]="urlUpdate || currentImgVehicle" height="60px" width="60px">
+                            </div> 
+                        </label>
+                           <input type="file"  id="choose-fileUpdate" hidden  name="image" (change)="changeUpdate($event)">
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-3">
+                            <label class="float-end">Type name</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" class="form-control form-control-sm" id="vehicleName" name="VehicleName" formControlName="VehicleName">
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                    <div class="row mt-3">
+                        <!-- <div class="col-3">
+                            <label class="float-end">Type image</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="file" class="form-control form-control-sm" id="image" name="image" formControlName="image" (change)="change($event)">
+                        </div> -->
+                        <div class="col-2">
+                            <button class="btn btn-dark btn-sm text-white" data-bs-dismiss="modal" id="btn">Update</button>
+                        </div>
+                        <!-- <input type="text" formControlName="_id" name="_id"> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

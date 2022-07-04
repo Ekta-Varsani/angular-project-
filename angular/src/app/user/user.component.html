@@ -1,0 +1,177 @@
+
+<div class="container main mt-5">
+
+    <!-- add user -->
+    <div class="row">
+        <form [formGroup]="userForm" enctype="multipart/form-data">
+            <div class="row mt-3 ">
+                <div class="col-1">
+                    <label class="mt-0 imageProfile" for="choose-file" name="image" id="preview">
+                        <img class="rounded" id="img-preview" [src]="imageSrc || '../../assets/images/random.png'" height="60px" width="60px">
+                    </label>
+                    <input type="file" id="choose-file" hidden name="image" formControlName="image" (change)="readURL($event);">
+                </div>
+                <div class="col-2">
+                    <input type="text" id="username" class=" form-control form-control-sm mt-2 border border-info text-info" placeholder="Enter name" name="UserName" formControlName="UserName">
+                    <span class="text-danger" *ngIf="userForm.controls['UserName'].invalid && userForm.controls['UserName'].touched && userForm.controls['UserName'].hasError('required')">
+                        Pleasr enter Name
+                    </span>
+                </div>
+                <div class="col-3">
+                    <input type="email" id="email" class=" form-control form-control-sm mt-2 border border-info text-info" placeholder="Enter email id" name="Email" formControlName="Email" (change)="compareEmail($event)">
+                    <span class="text-danger" *ngIf="userForm.controls['Email'].invalid && userForm.controls['Email'].touched && userForm.controls['Email'].hasError('required')">
+                        Please Enter Email
+                    </span>
+                    <span class="text-danger" *ngIf="userForm.controls['Email'].invalid && userForm.controls['Email'].touched && userForm.controls['Email'].hasError('email')">
+                        Please Enter valid Email
+                    </span>
+                </div>
+                <div class="col-2">
+                    <select class=" form-select form-select-sm  border border-info text-info mt-2" id="countryList"     name="countryId" formControlName="countryId">
+                        <option *ngFor="let country of userCountry" [value]="country._id">
+                            {{country.CounteryName}}
+                        </option>
+                    </select>
+                    <span class="text-danger" *ngIf="userForm.controls['countryId'].invalid && userForm.controls        ['countryId'].touched && userForm.controls['countryId'].hasError('required')">
+                        Please select country
+                    </span>
+                </div>
+                <div class="col-3">
+                    <input type="phone" id="phone" class=" form-control form-control-sm mt-2 border border-info text-info" placeholder="Enter Phone num" name="PhoneNumber" maxlength="10" formControlName="PhoneNumber" (keypress)="isNumber($event)" (change)="comparePhone($event)">
+                    <span class="text-danger" *ngIf="userForm.controls['PhoneNumber'].invalid && userForm.controls['PhoneNumber'].touched && userForm.controls['PhoneNumber'].hasError('required')">
+                        Pleasr enter Phone Number
+                    </span>
+                    <span class="text-danger" *ngIf="userForm.controls['PhoneNumber'].invalid && userForm.controls['PhoneNumber'].touched && userForm.controls['PhoneNumber'].hasError('pattern')">
+                        Length should be 10 digit
+                    </span>
+                </div>
+                <div class="col-1">
+                    <button type="submit" id="submitUser" (click)="onsubmit()" [disabled]="!userForm.valid || btn || btnPhone"
+                        class="btn btn-sm btn-info border border-info text-white btn-outline-light text-primary mt-2 mb-2">
+                        +
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- search user -->
+    <div class="row mt-3 d-flex">
+        <input id="searchUser"  class="form-control me-2 border border-info "
+        type="text" placeholder="Search via Email, name or phone number" [(ngModel)]="searchText">
+    </div>
+    
+    <!-- display users -->
+    <div class="row mt-3">
+        <table id="myTable" class="table table-striped">
+            <thead class="bg-info text-white">
+                <tr>
+                    <td>ID</td>
+                    <td>Name</td>
+                    <td>Email</td>
+                    <td>Country</td>
+                    <td>Phone</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of userList | filter:searchText; let i=index" >
+                    <td>{{i+1}}</td>
+                    <td>{{user.UserName | filter:searchText}}</td>
+                    <td>{{user.Email | filter:searchText}}</td>
+                    <td>{{user.countryId.CounteryName}}</td>
+                    <td>{{user.PhoneNumber | filter:searchText}}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-info text-white dropdown-toggle" data-bs-toggle="dropdown" id="dropdownMenuButton1"  aria-expanded="false">
+                            Actions
+                            </button>
+                            <ul class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton1">    
+                                <li><a data-bs-toggle="modal" data-bs-target="#userUpdate" (click)="getCurrentData(user)">Edit</a></li><hr class="text-info">
+                                <li><a (click)="deleteUser(user._id)">Remove</a></li><hr class="text-info">
+                                <li><a  (click)="addCard(user)">Add Card</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- update -->
+<div class="modal" id="userUpdate">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form [formGroup]="updateUserForm" (ngSubmit)="updateUser(updateUserForm.value)" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div class="row mt-3 Small mx-auto">
+                            <label class="iii " for="choose-fileUpdate"  id="previewUpdate">
+                                <div id="img-previewUpdate" >
+                                    <img class="mx-auto" [src]="urlUpdate || currentImg" height="60px" width="60px">
+                                </div> 
+                            </label>
+                            <input type="file"  id="choose-fileUpdate" hidden (change)="changeUpdate($event)" name="image" formControlName="image">
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="Name" class="float-end">Name</label>
+                            </div>
+                            <div class="col-8"><input type="text" class="form-control form-control-sm"
+                                    id="nameUpdate" name="Name" name="UserName" formControlName="UserName">
+                            </div>
+                            <!-- <span class="text-danger" *ngIf="updateUserForm.get('UserName')?.invalid && updateUserForm.get('UserName')?.touched && updateUserForm.get('UserName')?.errors">
+                                Please enter valid email
+                            </span> -->
+                            <!-- <span class="text-danger" *ngIf="updateUserForm.controls['UserName'].invalid && updateUserForm.controls['UserName'].touched && updateUserForm.controls['UserName'].hasError('required')">
+                                Pleasr enter Name
+                            </span> -->
+
+                            <!-- <span class="text-danger" *ngIf="f.UserName.errors"></span> -->
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="email" class="float-end">Email</label>
+                            </div>
+                            <div class="col-8"><input  type="email" class="form-control form-control-sm"
+                                    id="emailUpdate" name="Email" formControlName="Email" (change)="compareEmailUpdate($event)">
+                                <div class="text-danger" *ngIf="updateUserForm.get('Email')?.touched && updateUserForm.get('Email')?.invalid && updateUserForm.get('Email')?.errors">Enter valid email</div>
+                                </div>
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="Country Name" class="float-end">Country Name</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm form-control-sm" id="countryUpdate"
+                                    name="countryId" formControlName="countryId" >
+                                    <option *ngFor="let country of userCountry" [value]="country._id">{{country.CounteryName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="cell" class="float-end">Phone NUmber</label>
+                            </div>
+                            <div class="col-8"><input type="phone" class="form-control form-control-sm" maxlength="10"
+                                    id="phoneUpdate" name="PhoneNumber" formControlName="PhoneNumber" (change)="comparePhoneUpdate($event)" (keypress)="isNumber($event)"></div>
+                        </div>
+                        <button type="submit" id="submitUpdatedUser" class="btn btn-info text-white float-end mt-3" data-bs-dismiss="modal" [disabled]="btnUpdate || btnPhoneUpdate || !updateUserForm.valid">Update</button>
+                    </div>
+                    <input type="text" hidden formControlName="_id">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

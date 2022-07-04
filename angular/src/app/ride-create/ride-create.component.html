@@ -1,0 +1,140 @@
+<div class="container mt-3">
+    <div class="row">
+        <strong class="mx-auto mb-3 text-danger" id="err" *ngIf="error">Entered city is not belong to exist zone</strong>
+    </div>
+    
+    <form [formGroup]="rideForm">
+        <div class="row">
+            <div class="col-4">
+                <strong>Customer Details</strong>
+                <div class="row mt-3">
+                    <div class="col-3">
+                        <select class="form-control" formControlName="countryId">
+                            <option *ngFor="let country of countryList" [value]="country._id">
+                                + {{country.CounteryCode}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" type="phone" placeholder="Phone" (keypress)="isNumber($event)"  formControlName="PhoneNumber">
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-outline-info" (click)="checkPhone(rideForm.value)">Check</button>
+                    </div>
+                </div>
+                
+                <div class=" overlap mt-3">
+                    <label>Name</label>
+                    <input class="form-control" id="name" type="text" formControlName="UserName" [(ngModel)]="userName">
+                </div>
+                <div class=" overlap mt-3">
+                    <label>Email</label>
+                    <input class="form-control" id="email" type="text" formControlName="Email" [(ngModel)]="email">
+                </div>
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <input  id="card" type="radio" [value]="false" name="Cash">
+                        <label for="card">Card</label>
+                    </div>
+                    <div class="col-6">
+                        <input  id="cash" type="radio" [value]="true" name="Cash">
+                        <label for="cash">Cash</label>
+                    </div> 
+                </div>
+            </div>
+             <ng-template [ngIf]="userName" [ngIfElse]="nn">
+                <div class="col-4">
+                    <strong>Ride Details</strong>
+                    <div class="row mt-3">
+                        <div class="col-11 element" id='div_1'>
+                            <input class="form-control" type="text" placeholder="Pick up location" formControlName="PickUpLocation" id="origin-input" (change)="getData()" required>
+                        </div>
+                        <div class="col-1">
+                            <button class="add btn btn-sm my-auto float-end" (click)="add()"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                        </div>
+                    </div> 
+                    <div class="row mt-3" id="add" hidden>
+                        <div class="col-11 element" id='div_1'>
+                            <input class="form-control" type="text" placeholder="another Place"  id="addedInput">
+                        </div>
+                        <div class="col-1">
+                            <button class="remove btn my-auto float-end" (click)="remove()"><i class="fa fa-times" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-11">
+                            <input class="form-control" placeholder="Destination" type="text" formControlName="DropOffLocation" id="destination-input" (change)="getPrice()" required>
+                        </div>
+                    </div>
+                    <div class="row mt-3 ">
+                        <div class="col-11">
+                            <input id="date" class="form-control" type="datetime-local" formControlName="Date">
+                        </div>
+                    </div>
+                    <ul class="row" >
+                        <div class="col-11">
+                            <li id="vehicle" *ngFor="let vehicle of matchedVehicleaccess" >
+                                <div class="row mt-3 vehicleDetail" >
+                                    <input required class="col-1 my-auto float-end" type="radio" name="ServiceType" [value]="vehicle._id">
+                                    <label class="col-11">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <img [src]="vehicle.ServiceType.image" height="50px" width="50px">
+                                            </div>
+                                            <div class="col-6">
+                                                <!-- <input  [value]="vehicle.ServiceType._id"> -->
+                                                <small id="vehicle" >{{vehicle.ServiceType.VehicleName}}</small><br>
+                                                <span>
+                                                    <i class="fa fa-user-o" aria-hidden="true"></i>
+                                                </span>   &#215; {{vehicle.MaxSpace}}
+                                            </div>
+                                            <div class="price col-3 flex-end" id="price">
+                                                <span id="finalCost">&#8377;{{vehicle.finalCost}}</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </li>
+                        </div>  
+                    </ul>  
+                </div>
+                <div class="col-4">
+                    <div class="full" id="map"></div>
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-2 my-auto">
+                                    <span><i class="fa fa-clock-o" aria-hidden="true"></i></span>
+                                </div>
+                                <div class="col-10">
+                                    <span>  Estimate time</span><br>
+                                    <strong id="time"></strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-2 my-auto">
+                                    <span><i class="fa fa-road" aria-hidden="true"></i></span>
+                                </div>
+                                <div class="col-10">
+                                    <span >  Estimate Distance</span><br>
+                                    <strong id="distance"></strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="d-grid mt-3">
+                        <button [disabled]="!rideForm.valid" class="btn btn-info text-white" type="submit" (click)="onSubmit()">Book a Ride</button>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template #nn>
+                <div class="col-4">
+                    
+                </div>
+            </ng-template> 
+        </div>
+    </form>
+</div>

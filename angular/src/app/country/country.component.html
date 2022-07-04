@@ -1,0 +1,189 @@
+
+<div class="container mt-3 shadow">
+
+    <!-- add and search country -->
+    <form #basicform="ngForm" class=" align-items-center">
+        <div class="row p-2">
+            <div class="col-11">
+                <input class="form-control form-control-sm d-block" name="search" type="text" id="search" placeholder="Search" [(ngModel)]="searchText">
+            </div>
+            <div class="col-1">
+                <button class="btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#myModal">
+                    Add +
+                </button>
+            </div>    
+        </div>
+    </form>
+    
+    <!-- display countries -->
+    <div class="row mainCountry">
+        <div class="col-3" id="col3" *ngFor="let data of countryDisplayData | filter: searchText">
+            <div class="card cardDisplay shadow mt-3" id="display">
+                <div id="countrySearch" class="card-header d-flex justify-content-between">
+                    <div class="countryname" id="countryList">
+                        {{data.CounteryName}}
+                    </div>
+                    <div class="update">
+                        <form >
+                            <button class="btn btn-sm" type="button" data-bs-toggle="modal" 
+                            data-bs-target="#update" (click)="edit(data._id)">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <img id="flagImage" [src]="data.Sign" height="70px" width="100px" alt="" class="flage mx-auto d-block"><br>
+                    <div class="card-text">
+                        <div class="row">
+                            <div class="col-8">
+                                Currency Sign
+                            </div>
+                            <div class="col-4">
+                                {{data.CurrencySign}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-8">
+                                Country Phone Code
+                            </div>
+                            <div class="col-4">
+                                {{data.CounteryCode}}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-8">
+                            Currency Code
+                        </div>
+                        <div class="col-4">
+                            {{data.CurrencyCode}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- Add  -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div
+            class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form [formGroup]="basicForm" (ngSubmit)="onSubmit()">
+                    <div class="form-group">
+                        <input type="text" hidden id="signmodel" name="Sign" formControlName="Sign">
+                        <div id="flagDiv">
+                            <img class="modalFlag mx-auto d-block" src="">
+                        </div>
+                        <div class="row Small">
+                            <div class="col-4">
+                                <label for="Country Name" class="float-end">Country Name</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm form-control-sm" id="countryAdd" formControlName="CounteryName" name="CounteryName" (change)="selectCountry($event)" (click)="compare($event)"
+                                [class.is-invalid]="basicForm.get('CounteryName')?.invalid && basicForm.get('CounteryName')?.touched ">
+                                    <option *ngFor="let country of countrydata" >{{country.name}}</option>
+                                </select>
+                                <span class="text-danger" *ngIf="(basicForm.get('CounteryName')?.invalid && basicForm.get('CounteryName')?.touched) || basicForm.get('CounteryName')?.dirty">Please select country</span>
+                            </div>
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="Currency Code" class="float-end">Currency Code</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control form-control-sm" id="currencyCode" name="CurrencyCode" formControlName="CurrencyCode"
+                                [class.is-invalid]="basicForm.get('CurrencyCode')?.invalid && basicForm.get('CurrencyCode')?.touched ">
+                                <span class="text-danger" *ngIf="(basicForm.get('CurrencyCode')?.invalid && basicForm.get('CurrencyCode')?.touched) || basicForm.get('CurrencyCode')?.dirty">Please enter currency code</span>
+                            </div>
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="Country Code" class="float-end">Country Code</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control form-control-sm" name="CounteryCode" formControlName="CounteryCode"
+                                 [class.is-invalid]="basicForm.get('CounteryCode')?.invalid && basicForm.get('CounteryCode')?.touched" >
+                                <span class="text-danger" *ngIf="(basicForm.get('CounteryCode')?.invalid && basicForm.get('CounteryCode')?.touched) || basicForm.get('CounteryCode')?.dirty">Please enter country code </span>
+                            </div>
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="CurrencySign" class="float-end">Currency Sign</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" #cosi class="form-control form-control-sm" name="CurrencySign" formControlName="CurrencySign" 
+                                [class.is-invalid]="basicForm.get('CurrencySign')?.invalid && basicForm.get('CurrencySign')?.touched ">
+                                <span class="text-danger" *ngIf="(basicForm.get('CurrencySign')?.invalid && basicForm.get('CurrencySign')?.touched) || basicForm.get('CurrencySign')?.dirty">Please enter currency sign</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-danger float-end mt-3" id="add" [disabled]="btn || (!basicForm.valid)" data-bs-dismiss="modal">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- update -->
+<div class="modal" id="update">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <div id="countryNameUpdate">
+                        
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+             <div class="modal-body">
+                <form [formGroup]="updateForm" (ngSubmit)="update(updateForm.value)">
+                    <div class="form-group">
+                    </div>
+                    <div class="row mt-3 Small">
+                        <div class="col-4">
+                            <label for="Country Code" class="float-end">Country Code</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="countryCodeUpdate" class="form-control form-control-sm" id="coco"
+                                name="CounteryCode" formControlName="CounteryCode">
+                        </div>
+                    </div>
+                    <div class="row mt-3 Small">
+                        <div class="col-4">
+                            <label for="Currency Sign" class="float-end">Currency Code</label>
+                        </div>
+                        <div class="col-8"><input type="text" id="currencyCodeUpdate"
+                                class="form-control form-control-sm" id="Currency Code" name="CurrencyCode" formControlName="CurrencyCode"></div>
+                    </div>
+                    <div class="row mt-3 Small">
+                        <div class="col-4">
+                            <label for="Currency Sign" class="float-end">Currency Sign</label>
+                        </div>
+                        <div class="col-8"><input type="text" id="currencySignUpdate"
+                                class="form-control form-control-sm" id="cusi" name="CurrencySign" formControlName="CurrencySign"></div>
+                    </div>
+                    <button type="submit" class="btn btn-danger float-end mt-3" data-bs-dismiss="modal">Update</button>
+                    <input type="text" hidden formControlName="_id">
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 
+

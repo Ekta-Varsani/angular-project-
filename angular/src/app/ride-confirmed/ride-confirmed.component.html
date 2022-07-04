@@ -1,0 +1,228 @@
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-3">
+            <input id="date" type="date" class="form-control" (change)="getRides($event)">
+        </div>
+        <div class="col-9">
+            <div class="row">
+                <div class="col-3">
+                    <select class="form-control" [(ngModel)]="searchText">
+                        <option *ngFor="let vehicle of vehicleList">{{vehicle.VehicleName}}</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <input type="text" class="form-control" placeholder="user" id="searchUser" (keyup)="searchByUser($event)">
+                </div>
+                <div class="col-3">
+                    <input type="text" class="form-control" placeholder="provider" (keyup)="searchByDriver($event)">
+                </div>
+                <div class="col-3 d-grid">
+                    <button class="btn btn-info text-white">Search</button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-7">
+                    <div class="card shadow">
+                        <table class="table" id="myTable">
+                            <tr>
+                                <td>ID</td>
+                                <td>Time</td>
+                                <td>Vehicle</td>
+                                <td>Driver</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr *ngFor="let ride of rideListOfSelectedDate | filter: searchText;  let i=index" (click)="getDetailsOfRide(ride)">
+                                <td>{{i+1}}</td>
+                                <td>{{ride.Date}}</td>
+                                <td>{{ride.VehiclePriceDetail.ServiceType.VehicleName}}</td>
+                                <td>{{ride.DriverDetail.DriverName}}</td>
+                                <td>
+                                    <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#assignDriver">Reassign</button>
+                                </td>
+                                <td><button id="remove" class="btn btn-sm text-white" (click)="removeRide(ride)">&#215;</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-5" id="getDetailOfRide">
+                    <!-- <div class="card p-3 detail">
+                        <div class="row">
+                            <div class="col-4">
+                                <span>
+                                    <i class="fa fa-credit-card" aria-hidden="true"></i>
+                                </span>
+                                &#8377; 
+                            </div>
+                            <div class="col-5">
+                                <span>
+                                    <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                </span>
+                                
+                            </div>
+                            <div class="col-3">
+                                <span>
+                                    <i class="fa fa-road" aria-hidden="true"></i>
+                                </span>
+                                
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-4">
+                                <strong>Creation Time:
+                                </strong>
+                            </div>
+                            <div class="col-8"></div>
+                        </div>
+                        <div class="row mt-3">
+                            <strong>Location:
+                            </strong>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-3 extra">
+                                <div class="icon d-flex justify-content-center">
+                                    <i class="fa fa-circle" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="location"></div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-3 extra">
+                                <div class="icon d-flex justify-content-center">
+                                    <i class="fa fa-circle" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="location"></div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-4">
+                                <img class="mx-3" src="" height="80px" width="80px" style="border-radius:50%;">
+                            </div>
+                            <div class="col-8">
+                                <strong>Passanger Detail:</strong><br>
+                                <br>
+                                <br>
+                                
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-4">
+                                <img class="mx-3" src="" height="80px" width="80px" style="border-radius:50%;">
+                            </div>
+                            <div class="col-8">
+                                <strong>Driver Detail:</strong><br>
+                                <br>
+                                <br>
+                                
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- assign driver -->
+<div class="modal" id="assignDriver">
+    <div class="modal-dialog">
+        <div
+            class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <span class="mx-auto">Assign driver to Ride (ID: {{rideId}})</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form #name>
+                    <div class="row">
+                        <input type="text" class="form-control" placeholder="search driver by name, email or phone">
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-5">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td></td>
+                                        <td>Name</td>
+                                        <td>Email</td>
+                                        <td>Phone</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let driver of matchedDriver" (click)="getDriverSheduledRide(driver)">
+                                        <td>
+                                            <input  type="radio" name="driver" value="{{driver._id}}">
+                                        </td>
+                                        <td>{{driver.DriverName}}</td>
+                                        <td>{{driver.Email}}</td>
+                                        <td>{{driver.PhoneNumber}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-7">
+                            <strong>Scheduled Rides</strong>
+                            <div class="row" *ngFor="let rides of driverRides">
+                                
+                                <hr>
+                                <div class="col-6 ">
+                                   <div class="row">
+                                       <div class="col-3">
+                                           <img class="mx-2 my-2" src="{{rides.UserDetail.image}}" width="50px" height="50px">
+                                       </div>
+                                       <div class="col-9">
+                                           {{rides.UserDetail.UserName}}<br>
+                                           {{rides.Date}}<br>
+                                           <span><i class="fa fa-clock-o" aria-hidden="true"></i></span> {{rides.Time}}
+                                           <span><i class="fa fa-road" aria-hidden="true"></i></span> {{rides.Distance}}
+                                       </div>
+                                   </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-2 extra">
+                                            <div class="icon d-flex justify-content-center">
+                                                <i class="fa fa-circle" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="location">{{rides.PickUpLocation}}</div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-2 extra">
+                                            <div class="icon d-flex justify-content-center">
+                                                <i class="fa fa-circle" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="location">{{rides.DropOffLocation}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col d-grid">
+                            <button class="btn btn-dark text-white" data-bs-dismiss="modal" (click)="onAssignRandomDriver()">Assign Ride to any available driver</button>
+                        </div>
+                        <div class="col d-grid">
+                            <button class="btn btn-info text-white" data-bs-dismiss="modal" (click)="onAssignDriver()">Assign Ride to selected driver</button>
+                        </div>
+                    </div>
+                    <input type="text" id="rideId" name="id" [(ngModel)]="rideId" hidden>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,205 @@
+<div class="container mt-3">
+    <div class="row mt-3">
+        <div class="overlap col-2">
+            <label>Country</label>
+            <select class="form-control" [(ngModel)]="searchText">
+                <option *ngFor="let country of countryList">{{country.CounteryName}}</option>
+            </select>
+        </div>
+        <div class="overlap col-2">
+            <label>Status</label>
+            <select class="form-control" (change)="searchByStatus($event)">
+                <option>accepted</option>
+                <option>canceled</option>
+                <option>completed</option>
+            </select>
+        </div>
+        <div class="overlap col-2">
+            <label>Vehicle Type</label>
+            <select class="form-control" [(ngModel)]="searchText">
+                <option *ngFor="let vehicle of vehicleList">{{vehicle.VehicleName}}</option>
+            </select>
+        </div>
+        <div class="overlap col-2">
+            <label>Search By</label>
+            <select class="form-control" (change)="getValue()" id="select">
+                <option>user</option>
+                <option>driver</option>
+                <option>city</option>
+            </select>
+        </div>
+        <div class="col-2">
+            <input class="form-control" type="text" placeholder="Search By" id="searchUser" (keyup)="getValue()">
+        </div>
+        <div class="col-2 d-grid">
+            <button class="btn btn-info text-white">Search</button>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="overlap col-3">
+            <label>Creation Date</label>
+            <input type="date" class="form-control" (change)="searchByCreationDate($event)">
+        </div>
+        <div class="overlap col-3">
+            <label>PickUp Date</label>
+            <input type="date" class="form-control" (change)="searchByPickUpDate($event)">
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-2">
+                    <label class="mt-2">Amount :</label>
+                </div>
+                <div class="col-4">
+                    <input id="from" class="form-control" type="text" placeholder="from">
+                </div>
+                <div class="col-1 mt-2">
+                    -
+                </div>
+                <div class="col-4">
+                    <input id="to" type="text" class="form-control" placeholder="to" (keyup)="searchByAmount()">
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-8">
+            <form>
+                <div class="div">
+                    Page <strong>{{page}}</strong> out of <strong>{{totalPage}}</strong>
+                    <button id="previousBtn" class="btn" disabled (click)="previous()"><</button>
+                    <button id="nextBtn" class="btn" (click)="next()">></button>
+                </div>
+            </form>
+
+            <table class="table" id="myTable">
+                <thead>
+                    <tr>
+                        <td>Id</td>
+                        <td>User</td>
+                        <td>Driver</td>
+                        <td>Country</td>
+                        <td>City</td>
+                        <td>Created at</td>
+                        <td>Vehicle</td>
+                        <td>Status</td>
+                    </tr>
+                </thead>
+                <tbody class="second">
+                    <tr *ngFor="let rides of pageDetail | filter:searchText ; let i=index" (click)="showDetails(rides)"   id="{{rides._id}}">
+                        <td>{{i+1}}</td>
+                        <td>{{rides.UserDetail.UserName}}</td>
+                        <ng-template  [ngIf]="rides.DriverDetail" [ngIfElse]="none">
+                            <td>{{rides.DriverDetail.DriverName}}</td>
+                        </ng-template>
+                        <ng-template #none>
+                            <td></td>
+                        </ng-template>
+                        <td>{{rides.VehiclePriceDetail.countryId.CounteryName}}</td>
+                        <td>{{rides.VehiclePriceDetail.CityName.CityName}}</td>
+                        <td>{{rides.creationdate}}</td>
+                        <td>{{rides.VehiclePriceDetail.ServiceType.VehicleName}}</td>
+                        <ng-container *ngIf="rides.Status == 'accepted' ;else second">
+                            <td><span class="badge rounded-pill bg-primary">{{rides.Status}}</span></td>
+                        </ng-container>
+                        <ng-template #second>
+                            <ng-container *ngIf="rides.Status == 'canceled'; else third ">
+                                <td><span class="badge rounded-pill bg-danger">{{rides.Status}}</span></td>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #third>
+                            <ng-container *ngIf="rides.Status == 'completed'">
+                                <td><span class="badge rounded-pill bg-success">{{rides.Status}}</span></td>
+                            </ng-container>
+                        </ng-template>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4">
+            <div class="card p-3 detail">
+                <div class="row1">
+                    <div class="card m-1 p-2 shadow">
+                        <div class="row">
+                            <div class="col-4">
+                                <strong>Payment</strong>
+                            </div>
+                            <div class="col-8">
+                                {{payment}}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4">
+                                <strong>Creation Time</strong>
+                            </div>
+                            <div class="col-8">
+                                {{creationdate}}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4">
+                                <strong>PickUp Time</strong>
+                            </div>
+                            <div class="col-8">
+                                {{pickupDate}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <strong>Location:
+                    </strong>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-3 extra">
+                        <div class="icon d-flex justify-content-center">
+                            <i class="fa fa-circle" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="location">{{PickUpLocation}}</div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-3 extra">
+                        <div class="icon d-flex justify-content-center">
+                            <i class="fa fa-circle" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="location">{{DropOffLocation}}</div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-4">
+                        <img class="mx-3" src="{{UserImage}}" height="80px" width="80px" style="border-radius:50%;">
+                    </div>
+                    <div class="col-8">
+                        <strong>Passanger Detail:</strong><br>
+                        {{UserName}}<br>
+                        {{UserEmail}}<br>
+                        {{UserPhoneNumber}}
+                    </div>
+                </div>
+                <ng-template [ngIf]="flage" [ngIfElse]="noDriver">
+                    <div class="row mt-3">
+                        <div class="col-4">
+                            <img class="mx-3" src="{{DriverImage}}" height="80px" width="80px" style="border-radius:50%;">
+                        </div>
+                        <div class="col-8">
+                            <strong>Driver Detail:</strong><br>
+                            {{DriverName}}<br>
+                            {{DriverEmail}}<br>
+                            {{DriverPhoneNumber}}
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template #noDriver>
+                    <div class="row"></div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+

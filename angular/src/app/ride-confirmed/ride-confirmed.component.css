@@ -1,0 +1,14 @@
+.card{
+    padding: 5px;
+}
+.location{
+    background-color: rgb(248, 246, 246);
+}
+.modal-dialog{
+    max-width: 1200px !important;
+}
+#remove{
+    /* border-radius: 40%; */
+    /* padding: 10px; */
+    background-color: red;
+}
