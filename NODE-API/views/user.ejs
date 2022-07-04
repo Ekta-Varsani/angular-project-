@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/style.css">
+
+      <!-- JQuery -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script>  
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"> </script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" integrity="sha512-37T7leoNS06R80c8Ulq7cdCDU5MNQBwlYoy1TX/WUsLFC2eYNqtKlV0QjH7r8JpG/S0GUMZwebnVFLPd6SU5yg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+</head>
+
+<body>
+    <div class="container mt-5">
+        
+        <% if (message.length > 0) { %>
+            <div class="alert alert-success alert-dismissible fade show text-success" role="alert">
+                <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                <strong>
+                    <%= message %>
+                </strong>
+            </div>
+            <% } %>
+
+            <div class="row">
+                <form id="addUserValidation" action="/user" method="post" enctype="multipart/form-data" onsubmit="countrySelection()">
+                    <div class="row mt-3">
+                        <div class="col-1">
+                            <label class="mt-0 imageProfile" for="choose-file" name="image" id="preview">
+                                <div id="img-preview" >
+                                </div> 
+                            </label>
+                               <input type="file"  id="choose-file" hidden  name="image">
+                        </div>
+                        <div class="col-2">
+                            <input type="text" id="username" class=" form-control form-control-sm m-2 border border-info text-info"
+                                placeholder="Enter name" name="name">
+                        </div>
+
+                        <div class="col-3">
+                            <input type="email" id="email"
+                                class=" form-control form-control-sm m-2 border border-info text-info" onkeyup="emailExists()"
+                                placeholder="Enter email id" name="email">
+                                <div class="text-danger" id="duplicateEmail">
+
+                                </div>
+                        </div>
+
+                        <div class="col-2">
+                            <select class=" form-select form-select-sm m-2 border border-info text-info"
+                                id="countryList" name="countryName">
+                                <!-- <option disabled selected>Country</option> -->
+                               
+                            </select>
+                            <div class="text-danger" id="selectCountry">
+
+                            </div>
+                        </div>
+
+                        <div class="col-3">
+                            <input type="phone" id="phone"
+                                class=" form-control form-control-sm m-2 border border-info text-info"
+                                placeholder="Enter Phone num" name="phone" maxlength="10" onkeyup="phoneExists()"
+                                onkeypress="return isNumber(event)">
+                            <div class="text-danger" id="duplicatePhone">
+
+                            </div>
+                        </div>
+
+                        <div class="col-1">
+                            <button type="submit" id="submitUser"
+                                class="btn btn-sm btn-info border border-info text-white btn-outline-light text-primary mb-0">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="row">
+                <form method="post" action="/searchusers" class="d-flex">
+                    <input id="searchUser" onkeyup="searchSingleUser()" class="form-control me-2 border border-info "
+                        type="text" placeholder="Search via Email, name or phone number">
+                    <button class="btn btn-info text-white" type="submit">Search</button>
+                </form>
+            </div><br><br>
+            <div class="row">
+                <table id="myTable" class="table table-striped">
+                    <thead class="bg-info text-white">
+                        <tr>
+                            <td>ID</td>
+                            <td>Name</td>
+                            <td>Email</td>
+                            <td>Country</td>
+                            <td>Phone</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% userList.forEach((users, index)=> { %>
+                            <tr>
+                                <td>
+                                    <%= users._id %>
+                                </td>
+                                <td>
+                                    <%= users.UserName %>
+                                </td>
+                                <td>
+                                    <%= users.Email %>
+                                </td>
+                                <td>
+                                    <%= users.country.CounteryName %>
+                                </td>
+                                <td>
+                                    <%= users.PhoneNumber %>
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-info text-white dropdown-toggle"
+                                            data-bs-toggle="dropdown">
+                                            Action
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a data-bs-toggle="modal" data-bs-target="#updateUser"
+                                                    onclick="editUser('<%= index%>')" >Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <!-- <button type="button" class="btn" onclick="removeUser('<%=index%>')">Remove</button> -->
+                                                <a href="/delete/<%=users._id%>">Remove</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+
+    <!-- update -->
+    <div class="modal" id="updateUser">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form id="formUpdateUserValidate" method="post" action="/updateUser" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <div class="row mt-3 Small">
+                                <label class="mt-0 mx-auto d-block" for="choose-fileUpdate"  id="previewUpdate">
+                                    <div id="img-previewUpdate" >
+                                            <img src="" alt="">
+                                    </div> 
+                                </label>
+                                   <input type="file"  id="choose-fileUpdate" hidden  name="image">
+                            </div>
+                            <div class="row mt-3 Small">
+                                <div class="col-4">
+                                    <label for="Name" class="float-end">Name</label>
+                                </div>
+                                <div class="col-8"><input type="text" class="form-control form-control-sm"
+                                        id="nameUpdate" name="Name"></div>
+                            </div>
+                            <div class="row mt-3 Small">
+                                <div class="col-4">
+                                    <label for="email" class="float-end">Email</label>
+                                </div>
+                                <div class="col-8"><input onchange="emailExistsUpdate()" type="text" class="form-control form-control-sm"
+                                        id="emailUpdate" name="Email"></div>
+                            </div>
+                            <div class="text-danger" id="duplicateEmailUpdate">
+
+                            </div>
+                            <div class="row mt-3 Small">
+                                <div class="col-4">
+                                    <label for="Country Name" class="float-end">Country Name</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-select form-select-sm form-control-sm" id="countryUpdate"
+                                        name="CountryName">
+                                        
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3 Small">
+                                <div class="col-4">
+                                    <label for="cell" class="float-end">Phone NUmber</label>
+                                </div>
+                                <div class="col-8"><input onchange="phoneExistsUpdate()" type="text" class="form-control form-control-sm"
+                                        id="phoneUpdate" name="phone"></div>
+                            </div>
+                            <button type="submit" id="submitUpdatedUser" class="btn btn-info text-white float-end mt-3">Update</button>
+                        </div>
+                        <input type="text"  name="updateUser" id="update">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        //fetch country from api----------
+        var country;
+        fetch("http://localhost:4000/api/countery")
+        .then(res => res.json())
+        .then(data => fetchCountries(data))
+
+        function fetchCountries(countriesData){
+            country = countriesData;
+            let options=""
+            // let options = `<option disabled selected value = "defualt">country</option>`
+            for(let i = 0; i< country.length; i++){
+                options += `<option value = "${country[i]._id}">${country[i].CounteryName}</option>`
+            }
+            document.getElementById("countryList").innerHTML = options;
+            document.getElementById("countryUpdate").innerHTML = options
+        }
+        //-------------------------------
+
+        //search-----------------
+        const searchSingleUser = () => {
+            const search = document.getElementById("searchUser").value
+            let myTable = document.getElementById("myTable")
+            let tr = myTable.getElementsByTagName("tr");
+
+            for (let i = 0; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName("td")[1];
+                let tdEmail = tr[i].getElementsByTagName("td")[2];
+                let tdPhone = tr[i].getElementsByTagName("td")[4];
+                if (td || tdEmail || tdPhone) {
+                    let textValue = td.textContent || tdEmail.textContent || tdPhone.textContent;
+
+                    if (td.textContent.indexOf(search) > -1 || tdEmail.textContent.indexOf(search) > -1 || tdPhone.textContent.indexOf(search) > -1) {
+
+                        tr[i].style.display = ""
+                    }
+                    else {
+                        tr[i].style.display = "none"
+                    }
+                }
+            }
+        }
+        //----------------------------------------
+
+        //phone number validation----------------------
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;  
+        }
+        //---------------------
+
+        //exist phone number------------------------
+        const phoneExists = () => {
+            const duplicatePhone = document.getElementById("duplicatePhone")
+            const search = document.getElementById("phone").value
+            let myTable = document.getElementById("myTable")
+            let tr = myTable.getElementsByTagName("tr");
+            for (let i = 0; i < tr.length; i++) {
+                let tdPhone = tr[i].getElementsByTagName("td")[4];
+                if (tdPhone) {
+                    let textValue = tdPhone.textContent.trim();
+                    if (textValue === search) {
+                        duplicatePhone.innerHTML = "Phone number already exists"
+                        document.getElementById("submitUser").disabled = true
+                    }
+                    else{
+                        document.getElementById("submitUser").disabled = false
+                        // $("#duplicatePhone").hide()
+                    }
+                }
+            }
+        }
+        //--------------------------
+
+        //email exists-------------------------
+        const emailExists = () => {
+            const duplicateEmail = document.getElementById("duplicateEmail")
+            const search = document.getElementById("email").value
+            let myTable = document.getElementById("myTable")
+            let tr = myTable.getElementsByTagName("tr");
+            for (let i = 0; i < tr.length; i++) {
+                let tdEmail = tr[i].getElementsByTagName("td")[2];
+                if (tdEmail) {
+                    let textValue = tdEmail.textContent.trim();
+                    if (textValue === search) {
+                        duplicateEmail.innerHTML = "Email already exists"
+                        document.getElementById("submitUser").disabled = true
+                    }
+                    else{
+                        document.getElementById("submitUser").disabled = false
+                    }
+                }
+            }
+        }
+        //-------------------------------------
+
+        //update email exists
+        const emailExistsUpdate = () => {
+            const duplicateEmail = document.getElementById("duplicateEmailUpdate")
+            const search = document.getElementById("emailUpdate").value
+            let myTable = document.getElementById("myTable")
+            let tr = myTable.getElementsByTagName("tr");
+            for (let i = 0; i < tr.length; i++) {
+                let tdEmail = tr[i].getElementsByTagName("td")[2];
+                if (tdEmail) {
+                    let textValue = tdEmail.textContent.trim();
+                    if (textValue === search) {
+                        duplicateEmail.innerHTML = "Email already exists"
+                        document.getElementById("submitUpdatedUser").disabled = true
+                    }
+                    else{
+                        document.getElementById("submitUpdatedUser").disabled = false
+                    }
+                }
+            }
+        }
+        //-------------------------------
+
+        //update phone exists---------------------------------
+        const phoneExistsUpdate = () => {
+            const duplicatePhone = document.getElementById("duplicateEmailUpdate")
+            const search = document.getElementById("phoneUpdate").value
+            let myTable = document.getElementById("myTable")
+            let tr = myTable.getElementsByTagName("tr");
+            for (let i = 0; i < tr.length; i++) {
+                let tdPhone = tr[i].getElementsByTagName("td")[4];
+                if (tdPhone) {
+                    let textValue = tdPhone.textContent.trim();
+                    console.log(textValue === search);
+
+                    if (textValue === search) {
+                        document.getElementById("submitUpdatedUser").disabled = true
+                        duplicatePhone.innerHTML = "Phone number already exists"
+                    }
+                    else{
+                        document.getElementById("submitUpdatedUser").disabled = false
+                    }
+                }
+            }
+        }
+        //------------------------------------------
+
+        //update user-------------------------------------
+        const editUser = (data) => {
+            var users = <%-JSON.stringify(userList) %>; 
+            // console.log(users[data].image);
+            document.getElementById("nameUpdate").value = users[data].UserName
+            document.getElementById("emailUpdate").value = users[data].Email
+            document.getElementById("countryUpdate").value = users[data].countryId
+            document.getElementById("phoneUpdate").value = users[data].PhoneNumber
+            document.getElementById("update").value = users[data]._id
+            document.querySelector("#img-previewUpdate img").src = users[data].image;
+        }
+        //------------------------------------
+
+        //image update------------------
+        const chooseFileUpdate = document.getElementById("choose-fileUpdate");
+        const imgPreviewUpdate = document.getElementById("img-previewUpdate");
+
+        chooseFileUpdate.addEventListener("change", function () {
+            getImgDataUpdate();
+        });
+
+        function getImgDataUpdate() {
+            const files = chooseFileUpdate.files[0];
+            if (files) {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(files);
+                fileReader.addEventListener("load", function () {
+                
+                imgPreviewUpdate.style.display = "block";
+                imgPreviewUpdate.innerHTML = '<img src="' + this.result + '" />';
+                });
+            }
+        }
+        //------------------------------------------
+
+        //image--------------------------
+        const chooseFile = document.getElementById("choose-file")
+        const imgPreview2 = document.getElementById("img-preview");
+
+        chooseFile.addEventListener("change", function () {
+            getImgData();
+        });
+
+        function getImgData() {
+            const files = chooseFile.files[0];
+            if (files) {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(files);
+                fileReader.addEventListener("load", function () {
+                
+                imgPreview2.style.display = "block";
+                imgPreview2.innerHTML = '<img src="' + this.result + '" />';
+                });
+            }
+        }
+        //--------------------------------------------------
+
+
+        //JQuery--------------
+        $(document).ready(function() {
+
+            $('#addUserValidation').validate({  
+                rules: {  
+                    name: 'required',
+                    email: {
+                        required: true,
+                        email:true,
+                        unique: true
+                    },
+                    // countryName: {required: true,
+                    //     valueNotEquals: "default",
+                    // },
+                    phone: {
+                        required: true,
+                        minlength: true,
+                        maxlength: true
+                    }
+                },  
+                messages: {  
+                    name: 'Please Enter name',  
+                    email: {
+                        required: 'Please enter email',
+                        email: 'Please Enter Valid email',
+                        unique: "email already exists"
+                    },
+                    // countryName: { 
+                    //     required: "Please select a country",
+                    //     valueNotEquals: "Please select an item!" },
+                    phone: {
+                        required: 'Please enter country code',
+                        minlength: 'Minimum length of Phone num should me 8 digit',
+                        maxlength: 'Maximum length of phone num should be 10 digit'
+                    },
+                },  
+                submitHandler: function(form) {  
+                form.submit();  
+                }  
+            }); 
+
+            $("#formUpdateUserValidate").validate({
+                rules: {  
+                    Name: 'required',
+                    Email: {
+                        required: true,
+                        email:true,
+                        unique: true
+                    },
+                    countryName: 'required',
+                    phone: {
+                        required: true,
+                        minlength: true,
+                            // maxlength: true
+                    }
+                },  
+                messages: {  
+                    Name: 'Please Enter name',  
+                    Email: {
+                        required: 'Please enter email',
+                        email: 'Please Enter Valid email',
+                        unique: "email already exists"
+                    },
+                    phone: {
+                        required: 'Please enter country code',
+                        minlength: 'Minimum length of Phone num should me 8 digit',
+                        // maxlength: 'Maximum length of phone num should be 10 digit'
+                    },
+                },  
+                submitHandler: function(form) {  
+                form.submit();  
+                }  
+            })   
+        })
+        
+
+        // const countrySelection = () => {
+        //     const selectCountry = document.getElementById("countryList").value
+        //     // const name = document.getElementById("username").value
+        //     // if(name === ""){
+        //     //     document.getElementById("submitUser").disabled = true
+        //     // }
+        //     if(selectCountry === "defualt"){
+        //         document.getElementById("selectCountry").innerHTML = " please Select country"
+        //         document.getElementById("submitUser").disabled = true
+        //     }
+        //     else{
+        //         document.getElementById("submitUser").disabled = false
+        //     }
+        // }
+        
+    </script>
+</body>
+
+</html>

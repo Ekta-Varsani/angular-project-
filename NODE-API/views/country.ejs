@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country</title>
+
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/style.css">
+
+    <!-- icon -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script>  
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"> </script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" integrity="sha512-37T7leoNS06R80c8Ulq7cdCDU5MNQBwlYoy1TX/WUsLFC2eYNqtKlV0QjH7r8JpG/S0GUMZwebnVFLPd6SU5yg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+</head>
+
+<body>
+    <div class="container first shadow">
+        <% if (message.length > 0) { %>
+            <div class="alert alert-success alert-dismissible fade show text-success" role="alert">
+                <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                <strong>
+                    <%= message %>
+                </strong>
+            </div>
+            <% } %>
+        <div class="search">
+            <form id="basicForm" class="d-flex align-items-center">
+
+                <input class="form-control" onkeyup="searchSingleCountry()" name="search"  type="text" id="search" placeholder="Search">
+                <button class="btn btn-dark me-2" type="submit">
+                    <span>
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </span>
+                </button>
+                <button class="btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#myModal">Add
+                    country +</button>
+            </form>
+        </div>
+    </div> <br>
+
+    <div class="container main shadow">
+        <div class="row mainCountry">
+            <% countryList.forEach((country, index)=> {%>
+                <div class="col-3" id="<%=index%>">
+                    <div class="card cardDisplay shadow mt-3" id="display">
+                        <div id="countrySearch" class="card-header d-flex justify-content-between">
+                            <div class="countryname" id="countryList">
+                                <%= country.CounteryName%>
+                            </div>
+                            <div class="update">
+                                <form action="/country" method="post">
+                                    <a data-bs-toggle="modal" data-bs-target="#update" onclick="update('<%=index%>')">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                </form>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <img id="flagImage" src="<%= country.Sign%>" alt="" class="flage mx-auto d-block"><br>
+                            <div class="card-text">
+                                <div class="row">
+                                    <div class="col-8">
+                                        Currency Sign
+                                    </div>
+                                    <div class="col-4">
+                                        <%= country.CurrencySign%>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-8">
+                                        Country Phone Code
+                                    </div>
+                                    <div class="col-4">
+                                        <%= country.CounteryCode%>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-8">
+                                    Currency Code
+                                </div>
+                                <div class="col-4">
+                                    <%= country.CurrencyCode%>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%})%>
+        </div>
+
+    </div>
+    <!-- add -->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div id="extra">1</div>
+                    </div>
+
+                    <form action="/country" method="post" id="addUserValidate">
+                        <div class="form-group">
+                            <div id="error"></div>
+                            <input type="text" hidden id="sign" name="sign">
+                            <div id="flagDiv">
+                                <img class="modalFlag mx-auto d-block" src="">
+                            </div>
+                            <div class="row Small">
+                                <div class="col-4">
+                                    <label for="Country Name" class="float-end">Country Name</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-select form-select-sm form-control-sm" id="country"
+                                        name="countryName" onclick="checkCountry()">
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3 Small">
+                                <div class="col-4">
+                                    <label for="Currency Code" class="float-end">Currency Code</label>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control form-control-sm" id="currencyCode"
+                                        name="CurrencyCode">
+                                </div>
+                            </div>
+                            <div class="row mt-3 Small">
+                                <div class="col-4">
+                                    <label for="Country Code" class="float-end">Country Code</label>
+                                </div>
+                                <div class="col-8"><input type="text" class="form-control form-control-sm"
+                                        id="countryCode" name="CountryCode">
+                                </div>
+                            </div>
+                            <div class="row mt-3 Small">
+                                <div class="col-4">
+                                    <label for="Currency Sign" class="float-end">Currency Sign</label>
+                                </div>
+                                <div class="col-8"><input type="text" class="form-control form-control-sm"
+                                        id="currencySign" name="CurrencySign"></div>
+                            </div>
+                            <button id="register"    type="submit" class="btn btn-danger float-end mt-3">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- update -->
+    <div class="modal" id="update">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <div id="countryNameUpdate">
+
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form id="formUpdate" action="/countryUpdate" method="post">
+                        <div class="form-group">
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="Country Code" class="float-end">Country Code</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" id="countryCodeUpdate" class="form-control form-control-sm" id="coco"
+                                    name="coco">
+                            </div>
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="Currency Sign" class="float-end">Currency Code</label>
+                            </div>
+                            <div class="col-8"><input type="text" id="currencyCodeUpdate"
+                                    class="form-control form-control-sm" id="Currency Code" name="cuco"></div>
+                        </div>
+                        <div class="row mt-3 Small">
+                            <div class="col-4">
+                                <label for="Currency Sign" class="float-end">Currency Sign</label>
+                            </div>
+                            <div class="col-8"><input type="text" id="currencySignUpdate"
+                                    class="form-control form-control-sm" id="cusi" name="cusi"></div>
+                        </div>
+                        <button type="submit" class="btn btn-danger float-end mt-3">Update</button>
+                        <input type="text" name="idUpdate" hidden id="idUpdate">
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //update country-------------------------------------
+        var countries = <%- JSON.stringify(countryList) %>;
+
+        const update = (data) => {
+                // console.log(countries[data]);
+            document.getElementById("countryNameUpdate").innerHTML = countries[data].CounteryName
+            document.getElementById("countryCodeUpdate").value = countries[data].CounteryCode
+            document.getElementById("currencyCodeUpdate").value = countries[data].CurrencyCode
+            document.getElementById("currencySignUpdate").value = countries[data].CurrencySign
+            document.getElementById("idUpdate").value = countries[data]._id
+        }
+        //-------------------------------------
+
+        // rest country api-------------------------------
+        var countryDetails;
+        const countryList = document.getElementById("country")
+
+        fetch("https://restcountries.com/v2/all")
+            .then(res => res.json())
+            .then(data => fetchCountries(data))
+            .catch(err => err)
+
+        function fetchCountries(countriesData) {
+            countryDetails = countriesData;
+            let options = `<option disabled selected value = "defualt">Country</option>`
+            for (let i = 0; i < countryDetails.length; i++) {
+                options += `<option value = "${countryDetails[i].name}">${countryDetails[i].name}</option>`
+            }
+
+            countryList.addEventListener("change", event => {
+                displayCountryFlag(event.target.value)
+            })
+            countryList.innerHTML = options;
+            displayCountryFlag("AFG")
+        }
+        
+        function displayCountryFlag(countryByAlpha3Code) {
+            const countryData = countryDetails.find(country => country.name === countryByAlpha3Code);
+            document.getElementById("sign").value = countryData.flag
+            document.getElementById("currencyCode").value = countryData.currencies[0].code
+            document.getElementById("countryCode").value = countryData.callingCodes[0]
+            document.getElementById("currencySign").value = countryData.currencies[0].symbol
+            document.querySelector("#flagDiv img").src = countryData.flag
+        }
+        //----------------------------------------------
+
+        //search countries----------------------------------------
+        const searchSingleCountry = () => {
+            const search = document.getElementById("search").value;
+              const card = document.querySelectorAll("#display")
+            for(let i=0; i<countries.length; i++){
+                
+                let list = countries[i].CounteryName
+
+                if (list) {
+                
+                    if (list.indexOf(search) > -1 ) {
+                        $('#'+i).show();
+                        // console.log(list);
+                    }
+                    else {
+                        $('#'+i).hide();
+                        console.log("err");
+                    }
+                }
+            }
+        }
+        //----------------------------------------------
+
+            const checkCountry = () => {
+                const duplicateCountry = document.getElementById("country").value
+                document.getElementById("register").disabled = false;
+                        document.getElementById("extra").innerHTML = "";
+                for(let i=0; i<countries.length; i++){
+                    // console.log(countries);
+                    // let listt = countries[i].CounteryName
+                    console.log(((countries[i].CounteryName)[0].toUpperCase() + (countries[i].CounteryName).substring(1)))
+                    console.log((((countries[i].CounteryName)[0].toUpperCase() + (countries[i].CounteryName).substring(1)) + duplicateCountry.substring(1)));
+                    if(((countries[i].CounteryName)[0].toUpperCase() + (countries[i].CounteryName).substring(1)) === duplicateCountry)
+                    {
+                        document.getElementById("extra").innerHTML = `<div id="test" class="alert alert-danger">Country already Exists</div>`
+                        document.getElementById("register").disabled = true;
+
+                    }
+                }
+            }
+        
+        //JQuery--------------------
+        $(document).ready(function (){
+            //validation in add country----------------------
+            jQuery('#addUserValidate').validate({  
+                rules: {  
+                    countryName: {
+                        required: true,
+                        valueNotEquals: "default" 
+                    },
+                    CurrencyCode: 'required',
+                    CountryCode: 'required',
+                    CurrencySign: 'required'
+                
+                },  
+                messages: {  
+                    countryName: {
+                        required: "select",
+                        valueNotEquals: "Please select an item!" },  
+                    CurrencyCode: 'Please enter curruncy code',
+                    CountryCode: 'Please enter country code',
+                    CurrencySign: 'Please enter curruncy sign',
+                },  
+                submitHandler: function(form) {  
+                form.submit();  
+                }  
+            }); 
+            //--------------------------------------
+
+            //validation in update country--------------------------
+            jQuery('#formUpdate').validate({  
+                rules: {    
+                    cuco: 'required',
+                    coco: 'required',
+                    cusi: 'required'
+                
+                },  
+                messages: {   
+                    cuco: 'Please enter curruncy code',
+                    coco: 'Please enter country code',
+                    cusi: 'Please enter curruncy sign',
+                },  
+                submitHandler: function(form) {  
+                form.submit();  
+                }  
+            });
+            //------------------------------------------
+        })
+        //----------------------------------------------
+
+    </script>
+</body>
+</html>
